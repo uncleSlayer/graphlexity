@@ -3,6 +3,8 @@ import json
 from pydantic import BaseModel
 from langchain_community.tools import BraveSearch
 import time
+from config.env import settings as ENV_SETTINGS
+
 
 class CustomToolSchema(BaseModel):
     queries: list[str]
@@ -27,7 +29,7 @@ class CustomTools:
             response = []
 
             brave = BraveSearch.from_api_key(
-                api_key="BSAKGb4s1B70r_nb8YKCuJU-zhuNqmP", search_kwargs={"count": 1}
+                api_key=ENV_SETTINGS.BRAVE_SEARCH_KEY, search_kwargs={"count": 1}
             )
 
             for query in queries:
@@ -54,4 +56,3 @@ class CustomTools:
 
             return "Error while searching"
 
-        # for query in query_list:
