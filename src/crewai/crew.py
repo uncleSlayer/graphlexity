@@ -13,6 +13,7 @@ class SearchCrew:
 
         self.sub_topic_finder_agent = agents.sub_topic_finder_agent()
         self.brave_search_agent = agents.brave_search_agent()
+        self.final_answer_agent = agents.final_answer_agent()
 
     def kickoff_sub_topics(self, state: AgentState) -> AgentState:
 
@@ -45,5 +46,24 @@ class SearchCrew:
         result = crew.kickoff()
 
         state["brave_search_results"] = json.loads(result.raw)["web_pages"]
+
+        return state
+    
+    def kickoff_final_answer(self, state: AgentState) -> AgentState:
+
+        tasks = Tasks()
+
+        final_answer_task = tasks.final_answer_task(
+            self.sub_topic_finder_agent,
+            state["user_query"],
+            state["sub_topics_identified"],
+            state["brave_search_results"],
+        )
+
+        crew = Crew(agents=[self.sub_topic_finder_agent], tasks=[final_answer_task])
+
+        result = crew.kickoff()
+
+        state["final_answer"] = json.loads(result.raw)["final_answer"]
 
         return state

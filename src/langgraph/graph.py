@@ -23,19 +23,6 @@ class Node():
 
         state["user_query"] = user_query
 
-        # tool = BraveSearch.from_api_key(
-        #     api_key="BSAKGb4s1B70r_nb8YKCuJU-zhuNqmP", search_kwargs={"count": 5}
-        # )
-
-        # result_str = tool.run(search_term)
-
-        # result_deserialized = json.loads(result_str)
-
-        # top_five_results = [
-        #     {"title": result.title, "link": result.link, "snippet": result.snippet}
-        #     for result in result_deserialized
-        # ]
-
         return state
 
 
@@ -53,9 +40,13 @@ class WorkFlow:
 
         graph.add_node("register_brave_search", SearchCrew().kickoff_brave_search)
 
+        graph.add_node("register_final_answer", SearchCrew().kickoff_final_answer)
+
         graph.add_edge("register_query", "register_sub_topics")
         
         graph.add_edge("register_sub_topics", "register_brave_search")
+
+        graph.add_edge("register_brave_search", "register_final_answer")
 
         graph.set_entry_point("register_query")
 

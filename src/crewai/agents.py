@@ -8,7 +8,7 @@ class Agents:
     def sub_topic_finder_agent(self):
 
         return Agent(
-            name="sub_topic_finder",
+            name="sub_topic_finder_agent",
             role="Senior Sub Topic Finder",
             goal="Find sub topics for a user query",
             backstory=dedent(
@@ -23,7 +23,7 @@ class Agents:
 
     def brave_search_agent(self):
         return Agent(
-            name="brave_search",
+            name="brave_search_agent",
             role="Brave Search Agent",
             goal="Find relevant web pages based on identified subtopics",
             backstory=dedent(
@@ -33,5 +33,19 @@ class Agents:
                 """
             ),
             tools=[CustomTools.search_brave_tool],
+            verbose=True,
+        )
+
+    def final_answer_agent(self):
+        return Agent(
+            name="final_answer_writer_agent",
+            role="Final Answer Agent",
+            goal="Generate a final answer based on the user query, subtopics, and web pages",
+            backstory=dedent(
+                """
+                You are an expert writer. You will be given a user query, subtopics, and web pages and you will return a final answer.
+                You will use the final_answer_tool tool to generate a final answer based on the user query, subtopics, and web pages.
+                """
+            ),
             verbose=True,
         )
