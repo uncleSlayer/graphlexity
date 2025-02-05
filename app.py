@@ -1,16 +1,34 @@
 from fastapi import FastAPI
 from dotenv import load_dotenv
-from src.langgraph.graph import search_on_brave
+# from src.langgraph.graph import register_query
+from src.langgraph.graph import WorkFlow
+# from .src.langgraph.state import AgentState
+from pydantic import BaseModel
+
 
 load_dotenv()
 
 app = FastAPI()
 
 
-@app.get("/health")
-def read_root():
-    ans = search_on_brave({"search_term": "who is the prime minister of India?"})
-    return {"health": "ok!", "result": ans}
+class Query(BaseModel):
+    query: str
+
+@app.post("/search")
+def read_root(query: Query):
+
+    user_query = query.query
+
+    workflow = WorkFlow()
+
+    ans = workflow.app.invoke({
+        "user_query": user_query,
+        "sub_topics_identified": [],
+        "brave_search_results": [],
+        "final_answer": ""
+    })
+
+    return {"result": ans}
 
 
 if __name__ == "__main__":
