@@ -24,28 +24,26 @@ class CustomTools:
             str: A list of relevant web pages.
         """
 
+        from langchain_community.utilities import GoogleSerperAPIWrapper
+
         try:
 
             response = []
 
-            brave = BraveSearch.from_api_key(
-                api_key=ENV_SETTINGS.BRAVE_SEARCH_KEY, search_kwargs={"count": 1}
-            )
-
             for query in queries:
 
-                result_str = brave.run(query)
+                serper = GoogleSerperAPIWrapper()
+                result = serper.results(query)
 
+                first_organic_result = result.get("organic")[0]
                 # time sleep is needed not to get rate limited by brave search
                 time.sleep(2)
 
-                result_deserialized = json.loads(result_str)[0]
-
                 response.append(
                     {
-                        "title": result_deserialized['title'],
-                        "link": result_deserialized['link'],
-                        "snippet": result_deserialized['snippet']
+                        "title": first_organic_result['title'],
+                        "link": first_organic_result['link'],
+                        "snippet": first_organic_result['snippet']
                     }
                 )
 
